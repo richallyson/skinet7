@@ -17,6 +17,11 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 });
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+// Adicionando o AutoMapper como serviço
+// É preciso dizer onde ele está localizado, e o parametro passado faz isso, dizendo o local dele
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
@@ -28,6 +33,13 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
+
+// Permite uso de arquivos estaticos, como imagens, fontes, txt, etc
+// Para isso se deve criar a pasta wwwroot. E fizemos isso depois de criar o ProductUrlResolver
+// pois com o link completo da imagem, temos acesso a ela clicando nela, mas apenas se botar esse trecho de código e armazenar
+// as imagens no wwwroot
+// Outra coisa, a ordem importa, sendo assim, essa instrução deve ficar antes da autorização
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
