@@ -1,4 +1,5 @@
 using API.Dtos;
+using API.Errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -9,9 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController] // Esse bonito aqui faz as validações da parada. Ajuda a nossa vida
-    [Route("api/[controller]")] // Essa forma de chamar o nome do controlador eu n conhecia. Massa dms papai
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseApiController
     {
 
         // Para entender melhor vá no GenericRepository
@@ -45,10 +44,26 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        // Esse decorador ajuda na documentação do swagger. Se a gente não especificar quais os tipos de resposta das funções
+        // dos nossos controladores, por padrão ele sempre vai ter como retorno documentado o 200. Que no caso dessa
+        // a gente pode ter tanto o 200 quanto o 404 em caso de não achar um produto na nossa base.
+        // E como eu disse, por padrão tempos a 200, que retorna justamente o objeto retornado nessa função. E no swagger
+        // ele vai está documentado bem bonitinho, mostrando como deve ser o retorno da dto em formato json. Já no caso da
+        // resposta 404, ele não vai está documentado como deve ser a nossa ApiResponse, que tem um statusCode e uma message
+        // E para isso, precisamos escificar qual o tipo de retorno que o 404 vai ter, que no nosso caso, vai ser um json
+        // com o formato da classe ApiResponse. Como dito, a gente já tem o 200 como retorno default, mas é interessante documentar
+        // e mostrar todos os tipos de retorno que as funções do controlador tem. E no caso, para ver como seria o retorno do 404
+        // basta remover o typeof, para ver como ficaria.
+        // E bem, apesar de eu ter dito que devemos fazer isso para todas as funções, não é bem assim kk, o interessante seria
+        // o próprio swagger detectar o tipo de retorno que a função vai ter, seja erro ou o objeto em sim, e documentar isso.
+        // Até agora não ensinou como é feito, mas quem sabe uma hora vai ser. Porém, esse fica aqui de exemplo
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiReponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
             var product = await _productsRepo.GetEntityWithSpec(spec);
+            if (product == null) return NotFound(new ApiReponse(404));
             return _mapper.Map<Product, ProductToReturnDto>(product);
         }
 

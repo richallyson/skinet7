@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
+// Aqui a gente bota esse decorador, para impedir que ele seja documentado no swagger, tendo em vista que ele não faz parte da nossa aplicação
+[ApiExplorerSettings(IgnoreApi = true)]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
