@@ -1,5 +1,6 @@
 using API.Dtos;
 using API.Errors;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -34,13 +35,39 @@ namespace API.Controllers
         // Já essa versão, quando vê que não consegue dar reload em algumas mudanças, ele reseta a aplicação para alterar as mesmas
         // Porém, mesmo essa versão ainda tem problemas kk Tipo, se eu criar um novo controlador, ele n vai detectar
 
+        // [HttpGet]
+        // public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(
+        //     [FromQuery] ProductSpecParams productParams)
+        // {
+        //     var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+        //     var products = await _productsRepo.ListAsync(spec);
+
+        //     return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+        // }
+
+        // Sobre como essa função está funcionando agora
+        // O nosso retorno vai ser um Paginationdo tipo <ProductToReturnDtO>. Isso acontece, pois a classe pagination recebe
+        // um tipo genérico.
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
+            [FromQuery] ProductSpecParams productParams)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+
+            var totalItens = await _productsRepo.CountAsync(countSpec);
+
             var products = await _productsRepo.ListAsync(spec);
 
-            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+            // Na classe Pagination tempos uma propriedade do tipo IReadOnlyList, ela é responsável por armazenar os dados covertidos
+            // da nossa chamada. Ou seja, ela vai guardar os valores do DTO nela. Vai pegar a classe base, mapear e armazenar
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
+            // E no retorno, passamos uma Pagination do tipo ProductToReturnDto, passando os parametros especificos para ter uma
+            // paginação perfeita. Ou seja, agora teremos um objeto retornado que tem o pageIndex, pageSize, o total de itens e os
+            // dados em si
+            return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItens, data));
         }
 
         [HttpGet("{id}")]

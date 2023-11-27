@@ -52,6 +52,16 @@ namespace API.Extensions
                 };
             });
 
+            // Aqui a gente adiciona as polices em relação ao Cors
+            // E para usar mesmo, chamamos ela através de um middleware na Program.cs
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
+
             return services;
         }
     }

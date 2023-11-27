@@ -20,6 +20,17 @@ namespace Core.Specifications
         // E aqui ira replicar o comportamento do include, de no caso de eu querer trazer algo junto dos dados especificados no critério
         // Como algum objeto que está ligado ao objeto especificado. Tipo um produto, e uma lista de marcas que vendem ele
         List<Expression<Func<T, object>>> Includes { get; }
+
+        // Adicionando suporte para ordenação. Lembrando que todo o trabalho duro foi feito com as expressões acima. A partir daqui
+        // iremos adicionar todas as especificações que desejamos chamar no nosso repositório genérico
+        Expression<Func<T, object>> OrderBy { get; }
+        Expression<Func<T, object>> OrderByDescending { get; }
+
+        // Agora iremos adicionar coisas relevante a paginação
+
+        int Take { get; }
+        int Skip { get; }
+        bool IsPagingEnabled { get; }
     }
 
     // E agora iremos criar uma classe chamada de BaseSpecification, da qual vai herdar essa interface. É lá onde iremos criar as

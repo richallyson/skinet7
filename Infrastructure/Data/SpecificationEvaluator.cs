@@ -14,9 +14,29 @@ namespace Infrastructure.Data
         {
             var query = inputQuery;
 
+            // Aqui verificamos todas as expressões que não retornam uma lista. Caso não sejam nulas, são aplicadas
+
             if (spec.Criteria != null)
             {
                 query = query.Where(spec.Criteria);
+            }
+
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+            if (spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+            // É importante a paginação vir sempre ao fim, pois primeiro iremos filtra tudo, com o que a gente quer trazer, e na ordem
+            // que queremos trazer e depois disso, iremos aplicar a paginação. E claro, que isso se aplica também a ordenação.
+            // Iremos ordenar os dados trazidos de acordo com os critérios, e só depois iremos ordenar eles e por fim paginar os mesmos
+            if (spec.IsPagingEnabled)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
             }
 
             // Bem, como funciona o Aggregate. Ele pode ter uma ou duas sobrecargas, no nosso caso iremos usar duas.

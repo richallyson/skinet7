@@ -41,6 +41,8 @@ app.UseSwaggerUI();
 // Outra coisa, a ordem importa, sendo assim, essa instrução deve ficar antes da autorização
 app.UseStaticFiles();
 
+app.UseCors("CorsPolicy");
+
 app.UseAuthorization();
 
 app.MapControllers();
