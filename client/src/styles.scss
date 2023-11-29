@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Porquê instalamos o ngx-boostrap. Bem, o boostrap trabalha diretamente com js, e o ngx, com o angular. E dessa forma conseguimos
+detectar mudanças nos componentes boostrap, e isso vai nos ajudar a resolver n cenários no quesito usabilidade para o usuário */
+
+/* Esses imports do bootstrap vão ser direcionados para a Angular.json, pois os imports feito dentro do curso, pelo menos em
+relação a stylesheet (até agora) vai ser feita lá */
+
+/* Importing Bootstrap SCSS file. */
+/* @import "./node_modules/bootstrap/scss/bootstrap"; */
+
+/* Importing Datepicker SCSS file. */
+/* @import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";  */
