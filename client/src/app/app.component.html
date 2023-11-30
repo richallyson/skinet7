@@ -1,1 +1,18 @@
-<h1>Seja bem vindo {{title}}</h1>
+<app-nav-bar></app-nav-bar>
+
+<div class="container" style="margin-top: 140px;">
+  <h1>Seja bem vindo {{title}}</h1>
+  <ul>
+    <!-- E aqui a gente ta usando pela primeira vez uma structed directive. No caso o ngFor, que é basicamente
+    um forEach que usamos dentro de uma cshtml para printar coisas na tela, ou mesmo manipular. Não sei se esse é o caso do ngFor -->
+    <!-- Outra coisa. Antes estavamos usando um objeto do tipo any, sem definição nenhuma do que seria o nosso objeto retornado
+    da requisição da api. Mas ai, criamos uma interface, duas na real, uma pra paginação do tipo T, onde data vai ser T
+    e outra de produtos, onde ela vai ser o tipo T da paginação. E botamos isso para ser retornado, definimos o tipo de retorno
+    na nossa requisição. Dessa forma, agora temos o type safety, onde o typescript vai saber quais propriedades o objeto tem.
+    E basicamente o retorno vai ser como o retorno que temos na nossa api <Pagination<Product[]>>, a única diferença é que
+    precisamos definir que o Product é uma array, diferente do csharp, onde já definimos isso direto nas propriedades da paginação -->
+    <li class="list-unstyled" *ngFor="let product of products">
+      {{product.name}}
+    </li>
+  </ul>
+</div>

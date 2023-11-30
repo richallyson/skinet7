@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
 
 // Toda aplicação angular tem um NgModule, o mais. Ela é necessária para o funcionamento da aplicação
 // Dentro dela temos primeiro o declarations, que é onde todo o componente criar na aplicação deve ser registrado no ng module através das declarations.
@@ -15,12 +17,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // O NgModule vê quem esta registrado no bootstrap, e injeta no componente ou componentes registrados
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    // Modulo para requisições http. Vamos usar para trazer os dados do nosso back pro client
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
